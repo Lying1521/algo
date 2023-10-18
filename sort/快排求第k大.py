@@ -17,7 +17,6 @@
 # 输出: 4
 
 # 思路： 标准快排求解
-#       快排超时，考虑堆排序、桶、或计数排序
 
 class Solution:
     def findKthLargest(self, nums, k: int) -> int:
