@@ -8,3 +8,63 @@
 
 # 思路： O(1)的访问考虑使用哈希表，O(1)的插入使用双向链表,使用哈希表存储链表节点
 #       自定义双向链表节点，包含key,value
+
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        self.head = Node(0, 0)
+        self.foot = Node(-1, -1)
+        self.head.next = self.foot
+        self.foot.prev = self.head
+        self.values = {}
+        self.capacity = capacity
+        self.count = 0
+
+    def insert_to_head(self, node):
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+        self.head.next.prev = node
+        node.prev = self.head
+        node.next = self.head.next
+        self.head.next = node
+
+    def get(self, key: int) -> int:
+        if key in self.values:
+            node = self.values[key]
+            self.insert_to_head(node)
+
+            return node.val
+        else:
+            return -1
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.values:
+            node = self.values[key]
+            self.insert_to_head(node)
+            node.val = value
+        else:
+            node = Node(key, value)
+            self.head.next.prev = node
+            node.next = self.head.next
+            node.prev = self.head
+            self.head.next = node
+            self.values[key] = node
+            if self.count >= self.capacity:
+                temp = self.foot.prev
+                temp.prev.next = self.foot
+                self.foot.prev = temp.prev
+                temp.prev = None
+                temp.next = None
+                self.values.pop(temp.key)
+            else:
+                self.count += 1
+
+
+class Node:
+
+    def __init__(self, key, val):
+        self.key = key
+        self.val = val
+        self.next = None
+        self.prev = None
