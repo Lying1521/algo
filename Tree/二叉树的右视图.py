@@ -28,4 +28,3 @@ class Solution(object):
             layer = next_layer
 
         return results
-
